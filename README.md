@@ -1,6 +1,6 @@
 # s(4)u for Windows #
 
-sU is a demonstration program using the S4U extension in msv1_.0.
+s4u is a demonstration program using the S4U extension in msv1_.0.
 
 It allows the creation of a cmd.exe with the context of any user without requiring the password.
 
@@ -8,9 +8,7 @@ It allows the creation of a cmd.exe with the context of any user without requiri
 
 Create a cmd.exe with a local user security context:
 
-
     s4u.exe .\user
-
 
 Create a cmd.exe with a domain user security context:
 
