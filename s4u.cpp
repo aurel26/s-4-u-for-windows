@@ -160,7 +160,7 @@ InitLsaString (
 {
    USHORT StringSize;
 
-   StringSize = strlen(szSourceString);
+   StringSize = (USHORT)strlen(szSourceString);
 
    DestinationString->Length = StringSize;
    DestinationString->MaximumLength = StringSize + sizeof(CHAR);
@@ -185,7 +185,7 @@ InitUnicodeString (
 {
    USHORT StringSize;
 
-   StringSize = wcslen(szSourceString) * sizeof(WCHAR);
+   StringSize = (USHORT)wcslen(szSourceString) * sizeof(WCHAR);
    memcpy(pbDestinationBuffer, szSourceString, StringSize);
 
    DestinationString->Length = StringSize;
@@ -304,7 +304,7 @@ int _tmain(int argc, TCHAR *argv[])
    //
    // Create MSV1_0_S4U_LOGON structure
    //
-   dwMessageLength = sizeof(MSV1_0_S4U_LOGON) + (2 + wcslen(szDomain) + wcslen(szUsername)) * sizeof(WCHAR);
+   dwMessageLength = (DWORD)sizeof(MSV1_0_S4U_LOGON) + (2 + (DWORD)wcslen(szDomain) + (DWORD)wcslen(szUsername)) * sizeof(WCHAR);
    pS4uLogon = (PMSV1_0_S4U_LOGON)HeapAlloc(g_hHeap, HEAP_ZERO_MEMORY, dwMessageLength);
    if (pS4uLogon == NULL)
    {
