@@ -195,7 +195,11 @@ InitUnicodeString (
    return (PBYTE)pbDestinationBuffer + StringSize + sizeof(WCHAR);
 }
 
-int _tmain(int argc, TCHAR *argv[])
+int
+_tmain (
+   _In_ int argc,
+   _In_ TCHAR *argv[]
+   )
 {
    BOOL bResult;
    NTSTATUS Status;
