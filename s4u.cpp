@@ -210,6 +210,8 @@ _tmain (
    HANDLE hToken = NULL;
    HANDLE hTokenS4U = NULL;
 
+   BOOL bIsLocal = TRUE;
+
    LSA_STRING Msv1_0Name = { 0 };
    LSA_STRING OriginName = { 0 };
    PMSV1_0_S4U_LOGON pS4uLogon = NULL;
@@ -262,6 +264,12 @@ _tmain (
       fprintf(stderr, "Unable to parse command line.\n");
       goto End;
    }
+
+   //
+   // Check if account is local or not
+   //
+   if (_tcscmp(szDomain, TEXT(".")))
+      bIsLocal = FALSE;
 
    //
    // Activate the TCB privilege
