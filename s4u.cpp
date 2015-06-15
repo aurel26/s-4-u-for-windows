@@ -210,6 +210,7 @@ _tmain (
    HANDLE hToken = NULL;
    HANDLE hTokenS4U = NULL;
 
+   OSVERSIONINFO osvi;
    BOOL bIsLocal = TRUE;
 
    LSA_STRING Msv1_0Name = { 0 };
@@ -270,6 +271,21 @@ _tmain (
    //
    if (_tcscmp(szDomain, TEXT(".")))
       bIsLocal = FALSE;
+
+   //
+   // Get OS version
+   //
+   ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+#pragma warning(suppress : 4996; suppress : 28159)
+   bResult = GetVersionEx(&osvi);
+
+   if (bResult == FALSE)
+   {
+      fprintf(stderr, "GetVersionEx failed (error %u).", GetLastError());
+      goto End;
+   }
 
    //
    // Activate the TCB privilege
