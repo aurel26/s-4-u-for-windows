@@ -412,9 +412,15 @@ _tmain (
       goto End;
    }
 
-   pGroups->GroupCount = 1;
-   pGroups->Groups[0].Attributes = SE_GROUP_ENABLED | SE_GROUP_ENABLED_BY_DEFAULT | SE_GROUP_MANDATORY;
-   pGroups->Groups[0].Sid = pLogonSid;
+   //
+   // Add Logon Sid, if present.
+   //
+   if (pLogonSid)
+   {
+      pGroups->GroupCount++;
+      pGroups->Groups[pGroups->GroupCount].Attributes = SE_GROUP_ENABLED | SE_GROUP_ENABLED_BY_DEFAULT | SE_GROUP_MANDATORY;
+      pGroups->Groups[pGroups->GroupCount].Sid = pLogonSid;
+   }
 
    //
    // If an extra SID is specified to command line, add it to the pGroups structure.
@@ -425,9 +431,9 @@ _tmain (
 
       if (bResult == TRUE)
       {
-         pGroups->GroupCount = 2;
-         pGroups->Groups[1].Attributes = SE_GROUP_ENABLED | SE_GROUP_ENABLED_BY_DEFAULT | SE_GROUP_MANDATORY;
-         pGroups->Groups[1].Sid = pExtraSid;
+         pGroups->GroupCount++;
+         pGroups->Groups[pGroups->GroupCount].Attributes = SE_GROUP_ENABLED | SE_GROUP_ENABLED_BY_DEFAULT | SE_GROUP_MANDATORY;
+         pGroups->Groups[pGroups->GroupCount].Sid = pExtraSid;
       }
       else
       {
