@@ -436,7 +436,12 @@ _tmain (
    }
 
    //
-   // Call LSA
+   // Call LSA LsaLogonUser
+   //
+   // This call required SeTcbPrivilege privilege:
+   //    - [1] to get a primary token (vs impersonation token). The privilege MUST be activated.
+   //    - [2] to add supplemental SID with LocalGroups parameter.
+   //    - [3] to use a username with a domain name different from machine name (or '.').
    //
    Status = LsaLogonUser(
       hLsa,
