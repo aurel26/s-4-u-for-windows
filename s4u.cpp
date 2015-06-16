@@ -8,6 +8,12 @@
 
 #define STATUS_SUCCESS 0
 
+typedef struct _MSV1_0_SET_OPTION {
+   MSV1_0_PROTOCOL_MESSAGE_TYPE MessageType;
+   DWORD dwFlag;
+   BOOL bUnset;
+} MSV1_0_SET_OPTION, *PMSV1_0_SET_OPTION;
+
 HANDLE g_hHeap;
 
 BOOL
@@ -216,6 +222,7 @@ _tmain (
    LSA_STRING Msv1_0Name = { 0 };
    LSA_STRING OriginName = { 0 };
    PMSV1_0_S4U_LOGON pS4uLogon = NULL;
+   MSV1_0_SET_OPTION SetOption;
    TOKEN_SOURCE TokenSource;
    ULONG ulAuthenticationPackage;
    DWORD dwMessageLength;
@@ -327,6 +334,47 @@ _tmain (
       fprintf(stderr, "LsaLookupAuthenticationPackage failed (error 0x%x).", Status);
       hLsa = NULL;
       goto End;
+   }
+
+   //
+   // If account is not local to your system, we must set an option to allow
+   // domain account. However, the account must be in the domain accounts logon cache.
+   // This option appears with Windows 8/Server 2012.
+   //
+   if ((!bIsLocal) && 
+      ((osvi.dwMajorVersion > 6) || ((osvi.dwMajorVersion == 6) && (osvi.dwMinorVersion > 2)))
+      )
+   {
+      NTSTATUS ProtocolStatus;
+      PVOID pvReturnBuffer = NULL;
+      ULONG ulReturnBufferLength;
+
+      //
+      // Create MSV_1_0_SET_OPTION structure
+      //
+      memset(&SetOption, 0, sizeof(SetOption));
+      SetOption.MessageType = MsV1_0SetProcessOption;
+      SetOption.dwFlag = 0x20;
+
+      dwMessageLength = sizeof(SetOption);
+      
+      //
+      // Call LSA LsaCallAuthenticationPackage
+      //
+       Status = LsaCallAuthenticationPackage(
+         hLsa,
+         ulAuthenticationPackage,
+         &SetOption,
+         dwMessageLength,
+         &pvReturnBuffer,
+         &ulReturnBufferLength,
+         &ProtocolStatus
+         );
+      if (Status!=STATUS_SUCCESS)
+      {
+         printf("LsaCallAuthenticationPackage() failed (error 0x%x).\n", Status);
+         goto End;
+      }
    }
 
    //
