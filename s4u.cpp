@@ -6,7 +6,8 @@
 
 #pragma comment(lib, "secur32.lib")
 
-#define STATUS_SUCCESS 0
+#define STATUS_SUCCESS           0
+#define EXTRA_SID_COUNT          2
 
 typedef struct _MSV1_0_SET_OPTION {
    MSV1_0_PROTOCOL_MESSAGE_TYPE MessageType;
@@ -380,7 +381,7 @@ _tmain (
    //
    // Create MSV1_0_S4U_LOGON structure
    //
-   dwMessageLength = (DWORD)sizeof(MSV1_0_S4U_LOGON) + (2 + (DWORD)wcslen(szDomain) + (DWORD)wcslen(szUsername)) * sizeof(WCHAR);
+   dwMessageLength = (DWORD)sizeof(MSV1_0_S4U_LOGON) + (EXTRA_SID_COUNT + (DWORD)wcslen(szDomain) + (DWORD)wcslen(szUsername)) * sizeof(WCHAR);
    pS4uLogon = (PMSV1_0_S4U_LOGON)HeapAlloc(g_hHeap, HEAP_ZERO_MEMORY, dwMessageLength);
    if (pS4uLogon == NULL)
    {
@@ -417,9 +418,9 @@ _tmain (
    //
    if (pLogonSid)
    {
-      pGroups->GroupCount++;
       pGroups->Groups[pGroups->GroupCount].Attributes = SE_GROUP_ENABLED | SE_GROUP_ENABLED_BY_DEFAULT | SE_GROUP_MANDATORY;
       pGroups->Groups[pGroups->GroupCount].Sid = pLogonSid;
+      pGroups->GroupCount++;
    }
 
    //
@@ -431,9 +432,9 @@ _tmain (
 
       if (bResult == TRUE)
       {
-         pGroups->GroupCount++;
          pGroups->Groups[pGroups->GroupCount].Attributes = SE_GROUP_ENABLED | SE_GROUP_ENABLED_BY_DEFAULT | SE_GROUP_MANDATORY;
          pGroups->Groups[pGroups->GroupCount].Sid = pExtraSid;
+         pGroups->GroupCount++;
       }
       else
       {
